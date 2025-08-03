@@ -1,0 +1,59 @@
+<h2>Product Master</h2>
+
+<div>
+  <input [(ngModel)]="newProductName" placeholder="New Product Name" />
+  <select [(ngModel)]="newCategoryId">
+    <option *ngFor="let cat of categories" [value]="cat.category_id">
+      {{ cat.category_name }}
+    </option>
+  </select>
+  <button (click)="addProduct()">Add Product</button>
+</div>
+
+<table border="1" cellpadding="5" cellspacing="0" style="margin-top: 15px;">
+  <thead>
+    <tr>
+      <th>Product ID</th>
+      <th>Product Name</th>
+      <th>Category ID</th>
+      <th>Category Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let product of products">
+      <td>{{ product.product_id }}</td>
+
+      <!-- When not editing -->
+      <td *ngIf="editingId !== product.product_id">{{ product.product_name }}</td>
+      <td *ngIf="editingId === product.product_id">
+        <input [(ngModel)]="editingName" />
+      </td>
+
+      <td *ngIf="editingId !== product.product_id">{{ product.category_id }}</td>
+      <td *ngIf="editingId === product.product_id">
+        <select [(ngModel)]="editingCategoryId">
+          <option *ngFor="let cat of categories" [value]="cat.category_id">
+            {{ cat.category_name }}
+          </option>
+        </select>
+      </td>
+
+      <td>{{ product.category_name }}</td>
+
+      <td>
+        <button *ngIf="editingId !== product.product_id" (click)="editProduct(product)">Edit</button>
+        <button *ngIf="editingId === product.product_id" (click)="updateProduct()">Save</button>
+        <button *ngIf="editingId === product.product_id" (click)="cancelEdit()">Cancel</button>
+        <button (click)="deleteProduct(product.product_id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="margin-top: 10px;">
+  <button (click)="prevPage()" [disabled]="page === 1">Previous</button>
+  <span>Page: {{ page }}</span>
+  <button (click)="nextPage()">Next</button>
+</div>
