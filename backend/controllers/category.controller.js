@@ -1,8 +1,8 @@
-import { client } from "../db.js";
+import { pool } from "../db.js";
 
 export const getAllCategory = async (req,res) => {
     try {
-        const data = await client.query('SELECT * FROM category');
+        const data = await pool.query('SELECT * FROM category');
         res.status(200).json({
             categories : data.rows
         })
@@ -23,7 +23,7 @@ export const createCategory = async (req,res) => {
         return;
     }
     try {
-        const data = await client.query(
+        const data = await pool.query(
             'INSERT INTO category (category_name) VALUES($1) RETURNING *',[name]
         )
         res.status(201).json({
@@ -41,7 +41,7 @@ export const updateCategory = async (req,res) => {
     const categoryId = Number(req.params.id);
     const { name } = req.body;
     try {
-        const updateData = await client.query(
+        const updateData = await pool.query(
             `UPDATE category SET category_name = $1
              WHERE category_id = $2
              RETURNING *`,
@@ -67,7 +67,7 @@ export const updateCategory = async (req,res) => {
 export const deleteCategory = async  (req,res) => {
     const categoryId = Number(req.params.id);
     try {
-        const data = await client.query(
+        const data = await pool.query(
             `DELETE FROM category WHERE category_id = $1`,[categoryId]
         );
         if(data.rowCount === 0){

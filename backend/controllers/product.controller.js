@@ -1,11 +1,11 @@
-import { client } from "../db.js";
+import { pool } from "../db.js";
 
 export const getAllProduct = async (req,res) => {
     const page = Number(req.query.page) || 1;
     const pageSize = Number(req.query.pageSize) || 10;
     const offset = (page -1) * pageSize;
     try {
-        const data = await client.query(`
+        const data = await pool.query(`
             SELECT product_id, product_name, category.category_id, category.category_name
             FROM product
             JOIN category ON product.category_id = category.category_id
@@ -35,7 +35,7 @@ export const createProduct = async (req,res) => {
         return;
     }
     try {
-        const data = await client.query(
+        const data = await pool.query(
             'INSERT INTO product (product_name, category_id) VALUES( $1, $2 ) RETURNING *',
             [name, categoryId]
         )
@@ -59,7 +59,7 @@ export const updateProduct = async (req,res) => {
         });
     }
     try {
-        const updateProduct = await client.query(
+        const updateProduct = await pool.query(
             `UPDATE product 
              SET product_name = $1, category_id = $2
              WHERE product_id = $3
@@ -86,7 +86,7 @@ export const updateProduct = async (req,res) => {
 export const deleteProduct = async  (req,res) => {
     const productId = Number(req.params.id);
     try {
-        const data = await client.query(
+        const data = await pool.query(
             `DELETE FROM product WHERE product_id = $1`,[productId]
         );
 

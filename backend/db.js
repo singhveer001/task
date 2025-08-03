@@ -1,12 +1,15 @@
-import {Client} from 'pg';
+import { Pool } from 'pg';
 import dotenv from 'dotenv'
 dotenv.config();
 
-export const client = new Client({
+export const pool = new Pool({
     connectionString : process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false  
     }
 })
 
-await client.connect()
+
+pool.on('error', (err) => {
+  console.error('Unexpected error on PostgreSQL client', err);
+});
